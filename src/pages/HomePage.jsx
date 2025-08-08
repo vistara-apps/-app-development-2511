@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles, Users, Shield, Star } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
+import Loading from '../components/ui/Loading'
 import { useBundle } from '../contexts/BundleContext'
 import BundleCard from '../components/bundles/BundleCard'
 import BundleDetails from '../components/bundles/BundleDetails'
+import { useToast } from '../components/ui/Toast'
 
 const HomePage = () => {
-  const { bundles } = useBundle()
+  const { bundles, isLoading } = useBundle()
+  const { success: showSuccess } = useToast()
   const [selectedBundle, setSelectedBundle] = useState(null)
 
   const features = [
@@ -37,7 +40,8 @@ const HomePage = () => {
   ]
 
   const handleBookBundle = (bundle) => {
-    alert(`Booking ${bundle.propertyName} - This would redirect to booking flow`)
+    showSuccess(`Booking initiated for ${bundle.propertyName}! Redirecting to booking flow...`)
+    // This would redirect to booking flow in a real app
   }
 
   return (
@@ -62,13 +66,21 @@ const HomePage = () => {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/bundles">
-                  <Button variant="primary" size="xl" className="group">
+                  <Button 
+                    variant="primary" 
+                    size="xl" 
+                    className="group shadow-button hover:shadow-button-hover"
+                    rightIcon={<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />}
+                  >
                     Explore Bundles
-                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/membership">
-                  <Button variant="secondary" size="xl">
+                  <Button 
+                    variant="secondary" 
+                    size="xl"
+                    className="shadow-button hover:shadow-button-hover"
+                  >
                     View Membership
                   </Button>
                 </Link>
@@ -115,12 +127,18 @@ const HomePage = () => {
           {features.map((feature, index) => {
             const Icon = feature.icon
             return (
-              <Card key={index} className="p-8 text-center hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-8 h-8 text-primary" />
+              <Card 
+                key={index} 
+                className="p-8 text-center group transition-all duration-300 hover:shadow-card-hover hover:-translate-y-2"
+                hover
+              >
+                <div className="w-16 h-16 bg-primary-50 border border-primary-200 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary-100 group-hover:scale-110 transition-all duration-300">
+                  <Icon className="w-8 h-8 text-primary-600 group-hover:text-primary-700" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-700 transition-colors duration-200">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </Card>
             )
           })}
@@ -143,13 +161,20 @@ const HomePage = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {bundles.slice(0, 3).map((bundle) => (
-            <BundleCard
-              key={bundle.bundleId}
-              bundle={bundle}
-              onSelect={setSelectedBundle}
-            />
-          ))}
+          {isLoading ? (
+            // Loading skeletons
+            Array.from({ length: 3 }).map((_, index) => (
+              <Loading.BundleCard key={index} />
+            ))
+          ) : (
+            bundles.slice(0, 3).map((bundle) => (
+              <BundleCard
+                key={bundle.bundleId}
+                bundle={bundle}
+                onSelect={setSelectedBundle}
+              />
+            ))
+          )}
         </div>
       </section>
 
@@ -165,12 +190,20 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/membership">
-                <Button variant="secondary" size="xl">
+                <Button 
+                  variant="secondary" 
+                  size="xl"
+                  className="shadow-button hover:shadow-button-hover"
+                >
                   Start Your Membership
                 </Button>
               </Link>
               <Link to="/bundles">
-                <Button variant="ghost" size="xl" className="text-white border-white hover:bg-white/10">
+                <Button 
+                  variant="ghost" 
+                  size="xl" 
+                  className="text-white border-white hover:bg-white/10 hover:shadow-button-hover transition-all duration-200"
+                >
                   Browse Experiences
                 </Button>
               </Link>

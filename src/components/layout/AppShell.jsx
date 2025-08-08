@@ -73,8 +73,10 @@ const AppShell = ({ children, variant = 'default' }) => {
               
               {/* Mobile menu button */}
               <button
-                className="md:hidden p-2 rounded-md text-gray-700 hover:text-primary"
+                className="md:hidden p-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 active:bg-primary-100 transition-all duration-200 touch-manipulation"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? (
                   <X className="w-6 h-6" />
@@ -87,29 +89,32 @@ const AppShell = ({ children, variant = 'default' }) => {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-200">
-              <nav className="flex flex-col space-y-2">
-                {navigation.map((item) => {
+            <div className="md:hidden py-6 border-t border-gray-200 animate-slide-down">
+              <nav className="flex flex-col space-y-1">
+                {navigation.map((item, index) => {
                   const Icon = item.icon
                   return (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ${
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 touch-manipulation ${
                         isActive(item.href)
-                          ? 'text-primary bg-primary/10'
-                          : 'text-gray-700 hover:text-primary hover:bg-primary/5'
+                          ? 'text-primary-700 bg-primary-50 border-l-4 border-primary-500'
+                          : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 active:bg-primary-100'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-5 h-5 flex-shrink-0" />
                       <span>{item.name}</span>
                     </Link>
                   )
                 })}
               </nav>
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <ConnectButton />
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="px-4">
+                  <ConnectButton />
+                </div>
               </div>
             </div>
           )}
