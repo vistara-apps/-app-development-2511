@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: hsl(248, 90%, 60%);
+  --accent: hsl(23, 95%, 60%);
+  --bg: hsl(240, 32%, 96%);
+  --surface: hsl(255, 20%, 98%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: #1a1a1a;
+  line-height: 1.7;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .container-custom {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+}
